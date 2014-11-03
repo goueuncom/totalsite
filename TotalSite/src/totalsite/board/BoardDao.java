@@ -28,11 +28,11 @@ public class BoardDao {
 		String sql;
 		try{
 			if(keyWord == null || keyWord.isEmpty() || keyWord.equals("null")){
-				sql = "select * from tblboard order by num desc";
+				sql = "select * from tblboard order by pos";
 			}
 			else{
 				sql = "select * from tblboard where "
-						+ keyFiled + " like '%" + keyWord + "%' order by num desc";
+						+ keyFiled + " like '%" + keyWord + "%' order by pos";
 			}
 			con = pool.getConnection();
 			pstmt = con.prepareStatement(sql);
@@ -67,6 +67,11 @@ public class BoardDao {
 	public void insertBoard(BoardDto dto){
 		String sql;
 		try{
+			sql = "update tblboard set pos=pos+1";
+			con = pool.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.executeUpdate();
+			
 			sql = "insert into tblboard values(seq_num.nextVal,?,?,?,?,?,?,0,?,sysdate,0,0)";
 			con = pool.getConnection();
 			pstmt = con.prepareStatement(sql);
@@ -114,6 +119,8 @@ public class BoardDao {
 				dto.setContent(rs.getString("content"));
 				
 				dto.setPass(rs.getString("pass"));
+				dto.setPos(rs.getInt("pos"));
+				dto.setDepth(rs.getInt("depth"));
 			}
 		}
 		catch(Exception err){
@@ -162,5 +169,54 @@ public class BoardDao {
 		finally{
 			pool.freeConnection(con, pstmt);
 		}
+	}
+	// 기존 글의 pos값 변경
+	public void replyUpdatePos(BoardDto dto){
+		String sql = null;
+		try{
+			sql = "update tblboard set pos=pos+1 where pos > ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, dto.getPos());
+			pstmt.executeUpdate();
+		}
+		catch(Exception err){
+			System.out.println("replyUpdatePos() : " + err);
+		}
+		finally{
+			pool.freeConnection(con, pstmt);
+		}
+	}
+	// 답변
+	public void replyBoard(BoardDto dto){
+		String sql = null;
+		try{
+			sql = "insert into tblboard values(seq_num.nextVal,?,?,?,?,?,?,0,?,sysdate,?,?)";
+			con = pool.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, dto.getName());
+			pstmt.setString(2, dto.getEmail());
+			pstmt.setString(3, dto.getHomepage());
+			pstmt.setString(4, dto.getSubject());
+			pstmt.setString(5, dto.getContent());
+			pstmt.setString(6, dto.getPass());
+			pstmt.setString(7, dto.getIp());
+			pstmt.setInt(8, dto.getPos()+1);
+			pstmt.setInt(9, dto.getDepth()+1);
+			pstmt.executeUpdate();
+		}
+		catch(Exception err){
+			System.out.println("replyBoard() : " + err);
+		}
+		finally{
+			pool.freeConnection(con, pstmt);
+		}
+	}
+	// 들여 쓰기
+	public String useDepth(int depth){
+		String result = "";
+		for(int i=0; i<depth*3; i++){
+			result += "&nbsp;";
+		}
+		return result;
 	}
 }
