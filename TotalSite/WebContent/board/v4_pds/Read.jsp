@@ -1,4 +1,8 @@
 <%@ page contentType="text/html; charset=EUC-KR"%>
+<%@ page import="com.oreilly.servlet.*" %>
+<%@page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy"%>
+<%@page import="java.util.*"%>
+<%@page import="java.io.File"%>
 <html>
 <head><title>JSPBoard</title>
 <link href="style.css" rel="stylesheet" type="text/css">
@@ -8,7 +12,7 @@
 <jsp:useBean id="dto" class="totalsite.board.BoardDto"	/>
 
 <body>
-<%
+<%	
 	int num = Integer.parseInt(request.getParameter("num"));
 	// List.jsp 페이지로 돌아갈 때 쓸 값
 	String keyField = request.getParameter("keyField");
@@ -17,6 +21,7 @@
 	dto = dao.getBoard(num);
 	pageContext.setAttribute("dto", dto);
 %>
+
 <br><br>
 <table align=center width=70% border=0 cellspacing=3 cellpadding=0>
  <tr>
@@ -41,6 +46,11 @@
     <tr> 
      <td align=center bgcolor=#dddddd> 제 목</td>
      <td bgcolor=#ffffe8 colspan=3><%=dto.getSubject()%></td>
+   </tr>
+   <tr> 
+     <td align=center bgcolor=#dddddd> 첨부 파일</td>
+     <td bgcolor=#ffffe8 colspan=3><a href="download.jsp?name=<%=dto.getFilename()%>"	>
+				<%=dto.getFilename()%></a><br/></td>
    </tr>
    <tr> 
     <td colspan=4><%=dto.getContent()%></td>

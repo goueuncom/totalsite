@@ -13,6 +13,7 @@ public class BoardDto {
 	private String regdate;
 	private int pos;
 	private int depth;
+	private String filename;
 	
 	public int getNum() {
 		return num;
@@ -86,5 +87,11 @@ public class BoardDto {
 	}
 	public void setDepth(int depth) {
 		this.depth = depth;
+	}
+	public String getFilename() {
+		return filename;
+	}
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 }

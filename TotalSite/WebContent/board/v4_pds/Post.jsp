@@ -12,8 +12,8 @@
  </tr>
 </table>
 <br>
+<form name=post method=post action="PostProc.jsp" enctype="multipart/form-data">
 <table width=80% cellspacing=0 cellpadding=3 align=center>
-<form name=post method=post action="PostProc.jsp" >
 
 <input type="hidden" name="ip" value="<%=request.getRemoteAddr()%>"		/>
 
@@ -43,6 +43,11 @@
     <tr>
      <td width=10%>비밀 번호</td> 
      <td width=90% ><input type=password name=pass size=15 maxlength=15></td>
+    </tr>
+    <tr>
+    	<td width=10%>첨부 파일</td> 
+    	<td width=90%><input type="file" name="upFile" /><br/>
+    	</td>
     </tr>
     <tr>
      <td colspan=2><hr size=1></td>

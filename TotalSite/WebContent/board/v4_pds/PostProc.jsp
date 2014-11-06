@@ -1,21 +1,32 @@
 <%@ page contentType="text/html; charset=EUC-KR"%>
+<%@ page import="com.oreilly.servlet.*" %>
+<%@page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy"%>
+<%@page import="java.util.*"%>
+<%@page import="java.io.File"%>
 <%	request.setCharacterEncoding("euc-kr"); %>
 
 <jsp:useBean id="dao" class="totalsite.board.BoardDao"	/>
 <jsp:useBean id="dto" class="totalsite.board.BoardDto"	/>
 <%
-/* 	필요 없쌉. <jsp:setProperty property="*" 이면 OK
-	dto.setName(request.getParameter("name"));
-	dto.setName(request.getParameter("email"));
-	dto.setName(request.getParameter("homepage"));
-	dto.setName(request.getParameter("subject"));
-	dto.setName(request.getParameter("content"));
-	dto.setName(request.getParameter("pass"));
-	dto.setName(request.getParameter("ip"));
-	 */
-%>
-<jsp:setProperty	property="*"	 name="dto"/>
-<%
+	ServletContext ctx = getServletContext();
+	String path = ctx.getRealPath("fileupload");
+	int maxSize = 50 * 1024 * 1024;
+	
+	MultipartRequest multi =
+			new MultipartRequest(request, path, maxSize, "euc-kr", new DefaultFileRenamePolicy());
+	
+	Enumeration names = multi.getFileNames();
+	String paramname = (String)names.nextElement();	// upFile
+	//out.println(multi.getFilesystemName(paramname));
+	dto.setFilename(multi.getFilesystemName(paramname));
+	//dto.setFilename(multi.getFilesystemName("upFile"));
+	dto.setName(multi.getParameter("name"));
+	dto.setEmail(multi.getParameter("email"));
+	dto.setHomepage(multi.getParameter("homepage"));
+	dto.setSubject(multi.getParameter("subject"));
+	dto.setContent(multi.getParameter("content"));
+	dto.setPass(multi.getParameter("pass"));
+	dto.setIp(multi.getParameter("ip"));
 	dao.insertBoard(dto);
 	response.sendRedirect("List.jsp");
 %>

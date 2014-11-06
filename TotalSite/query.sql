@@ -11,6 +11,7 @@ CREATE TABLE tblBoard(
 	regdate		date,
 	pos			number,
 	depth			number,
+	filename		varchar2(50),
 	CONSTRAINT pk_num	PRIMARY KEY(num)
 );
 
@@ -22,6 +23,7 @@ INSERT INTO tblboard VALUES(seq_num.nextVal, 'bbb', 'bbb', 'bbb', 'bbb', 'bbb', 
 select * from tblboard;
 
 delete from tblboard;
+drop table tblBoard cascade constraint purge;
 
 CREATE TABLE tblReply(
 	num			number,

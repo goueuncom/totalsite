@@ -52,6 +52,7 @@ public class BoardDao {
 				dto.setRegdate(rs.getString("regdate"));
 				dto.setPos(rs.getInt("pos"));
 				dto.setDepth(rs.getInt("depth"));
+				dto.setFilename("filename");
 				v.add(dto);
 			}
 		}
@@ -72,7 +73,7 @@ public class BoardDao {
 			pstmt = con.prepareStatement(sql);
 			pstmt.executeUpdate();
 			
-			sql = "insert into tblboard values(seq_num.nextVal,?,?,?,?,?,?,0,?,sysdate,0,0)";
+			sql = "insert into tblboard values(seq_num.nextVal,?,?,?,?,?,?,0,?,sysdate,0,0,?)";
 			con = pool.getConnection();
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, dto.getName());
@@ -82,6 +83,7 @@ public class BoardDao {
 			pstmt.setString(5, dto.getContent());
 			pstmt.setString(6, dto.getPass());
 			pstmt.setString(7, dto.getIp());
+			pstmt.setString(8, dto.getFilename());
 			pstmt.executeUpdate();
 		}
 		catch(Exception err){
@@ -121,6 +123,7 @@ public class BoardDao {
 				dto.setPass(rs.getString("pass"));
 				dto.setPos(rs.getInt("pos"));
 				dto.setDepth(rs.getInt("depth"));
+				dto.setFilename(rs.getString("filename"));
 			}
 		}
 		catch(Exception err){
